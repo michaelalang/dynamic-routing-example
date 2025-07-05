@@ -208,8 +208,6 @@ kustomize build deploy/frontend|envsubst|oc create -f -
 ### Browser based
 To access the Frontend Application open your Browser and point it to your `EXTERNALNAME` specified FQDN.
 
-![Frontend Application](images/frontend.png)
-
 Click each Button to see the different outputs of the backends.
 
 ![Prod Application](images/frontend-prod-response.png)

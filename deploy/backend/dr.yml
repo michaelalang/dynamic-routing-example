@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: product-api
+  namespace: ${NAMESPACE}
+spec:
+  host: product-api.${NAMESPACE}.svc.cluster.local # Matches the host in the VirtualService
+  subsets:
+  - name: v1
+    labels:
+      version: v1 
+      app: product-api

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: gateway-product
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    istio: gateway-product
+  servers:
+    - hosts:
+        - ${EXTERNALNAME}
+      port:
+        name: https
+        number: 8443
+        protocol: HTTPS
+      tls:
+        credentialName: gateway-secret
+        mode: SIMPLE
+    - hosts:
+        - ${EXTERNALNAME}
+      port:
+        name: http
+        number: 8080
+        protocol: HTTP

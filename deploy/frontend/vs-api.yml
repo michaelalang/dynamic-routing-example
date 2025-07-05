@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: product-api-dynamic-router
+  namespace: ${NAMESPACE}
+spec:
+  hosts:
+  - product-api.internal
+  gateways:
+  - mesh # Apply to internal mesh traffic (frontend sidecar calls this)
+  http:
+  # Rule for 'prod' environment
+  - match:
+    - headers:
+        x-target-env:
+          exact: prod
+    route:
+    - destination:
+        host: product-api.product-ns-prod.svc.cluster.local # FQDN for prod backend
+        port:
+          number: 8080
+        subset: v1 # Matches a subset in the DestinationRule, if defined for this FQDN
+      weight: 100
+  # Rule for 'dev' environment
+  - match:
+    - headers:
+        x-target-env:
+          exact: dev
+    route:
+    - destination:
+        host: product-api.product-ns-dev.svc.cluster.local # FQDN for dev backend
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+  # Rule for 'qa' environment
+  - match:
+    - headers:
+        x-target-env:
+          exact: qa
+    route:
+    - destination:
+        host: product-api.product-ns-qa.svc.cluster.local # FQDN for qa backend
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+  # Default route (optional, but good for handling missing/invalid headers)
+  - route:
+    - destination:
+        host: product-api.product-ns-prod.svc.cluster.local # Fallback to prod or an error service
+        port:
+          number: 8080
+        subset: v1
+      weight: 100

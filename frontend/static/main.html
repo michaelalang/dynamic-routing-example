@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern AIOHTTP Backend Selector</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Select a Backend System</h1>
+        <div class="button-group">
+            <button onclick="fetchBackend('/backend1', '%s')">Backend System 1 (HTTP/Prod)</button>
+            <button onclick="fetchBackend('/backend2', '%s')">Backend System 2 (HTTP/Dev)</button>
+            <button onclick="fetchBackend('/backend3', '%s')">Backend System 3 (HTTP/QA)</button>
+        </div>
+        <div id="response-area">Click a button above to get a response from a backend system.</div>
+        <div id="response-area">%s</div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
+

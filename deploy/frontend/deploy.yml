@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  namespace: frontend-ns
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: v1
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: webapp
+        image: localhost/app:frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BACKEND
+          value: "http://product-api.internal/products.json"
+      - args:
+          - --config=/config/collector.yml
+        image: localhost/opentelemetry-collector-contrib:0.121.0
+        imagePullPolicy: Always
+        name: otel
+        ports:
+          - containerPort: 4317
+            protocol: TCP
+          - containerPort: 4318
+            protocol: TCP
+          - containerPort: 50514
+            protocol: TCP
+          - containerPort: 50514
+            protocol: UDP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+          - mountPath: /config/collector.yml
+            name: collector
+            readOnly: true
+            subPath: collector.yml
+      imagePullSecrets:
+        - name: quay-home
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: collector
+            optional: true
+          name: collector
+---

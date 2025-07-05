@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: product-api
+  namespace: ${NAMESPACE}
+spec:
+  exportTo:
+    - .
+  hosts:
+    - product-api.internal
+  location: MESH_INTERNAL
+  ports:
+    - name: http
+      number: 80
+      protocol: HTTP
+      targetPort: 8080
+  resolution: STATIC
+  endpoints:
+  - address: product-api.product-ns-prod.svc.cluster.local
+    ports:
+      http: 8080
+  - address: product-api.product-ns-dev.svc.cluster.local
+    ports:
+      http: 8080
+  - address: product-api.product-ns-qa.svc.cluster.local
+    ports:
+      http: 8080

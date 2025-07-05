@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deploy.yml
+- namespace.yml
+- service.yml
+- dr.yml
+- secret.yml
+- cm.yml
+
+namespace: ${NAMESPACE}
+images:
+- name: localhost/opentelemetry-collector-contrib
+  newName: quay.io/otel/opentelemetry-collector-contrib
+- name: localhost/app:backend
+  newName: quay.io/infrastructure/app
+  newTag: backend

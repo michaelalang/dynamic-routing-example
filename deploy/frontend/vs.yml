@@ -1,0 +1,51 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+  namespace: ${NAMESPACE}
+spec:
+  hosts:
+  - ${EXTERNALNAME}
+  gateways:
+  - gateway-product
+  http:
+  - match:
+    - headers:
+        x-target-env:
+          exact: "prod"
+    route:
+    - destination:
+        host: product-api.product-ns-prod.svc.cluster.local
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+  - match:
+    - headers:
+        x-target-env:
+          exact: "qa"
+    route:
+    - destination:
+        host: product-api.product-ns-qa.svc.cluster.local
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+  - match:
+    - headers:
+        x-target-env:
+          exact: "dev"
+    route:
+    - destination:
+        host: product-api.product-ns-dev.svc.cluster.local
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+  - route:
+    - destination:
+        host: webapp.${NAMESPACE}.svc.cluster.local
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
